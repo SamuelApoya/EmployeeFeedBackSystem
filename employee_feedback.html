@@ -1,0 +1,80 @@
+<!-- public/employee_feedback.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Feedback System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        textarea, button {
+            padding: 10px;
+            margin: 5px;
+            width: 100%;
+        }
+
+        #feedbackList {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Feedback System</h1>
+
+    <form id="feedbackForm">
+        <label for="employeeFeedback">Provide your feedback:</label>
+        <textarea id="employeeFeedback" rows="4" required></textarea>
+
+        <button type="button" onclick="submitFeedback()">Submit Feedback</button>
+    </form>
+
+    <div id="feedbackList">
+        <h2>Employee Feedback</h2>
+        <ul id="feedbackData"></ul>
+    </div>
+
+    <script>
+        function submitFeedback() {
+            var feedbackText = document.getElementById('employeeFeedback').value;
+
+            if (feedbackText) {
+                // Send feedback to the server
+                fetch('/api/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: feedbackText }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error saving feedback.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Feedback submitted successfully.');
+                    document.getElementById('employeeFeedback').value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                    alert('Failed to submit feedback. Please try again later.');
+                });
+            } else {
+                alert('Please provide feedback before submitting.');
+            }
+        }
+    </script>
+</body>
+</html>
